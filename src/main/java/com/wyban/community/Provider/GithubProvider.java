@@ -18,24 +18,19 @@ import java.io.IOException;
 public class GithubProvider {
 
     public String getAccessToken(AccessTokenDTO accessTokenDTO){
-
-        System.out.println("##########");
         MediaType  mediaType = MediaType.get("application/json; charset=utf-8");
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(mediaType,JSON.toJSONString(accessTokenDTO));
         Request request = new Request.Builder()
-                .url("https://github.com/login/oauth/access_token?client_id="+accessTokenDTO.getClient_id()+"&client_secret="+accessTokenDTO.getClient_secret()+"&code="+accessTokenDTO.getCode()+"&redirect_uri="+accessTokenDTO.getRedirect_uri()+"&state="+accessTokenDTO.getState())
+                .url("https://github.com/login/oauth/access_token")
                 .post(body)
                 .build();
         try (Response response = client.newCall(request).execute()) {
                 String string = response.body().string();
-                System.out.println("*********");
-                System.out.println(string);
-                System.out.println("*********");
-                return string;
-
-        } catch (IOException e) {
-            System.out.println("有异常："+ e);
+                String token = string.split("&")[0].split("=")[1];
+                return token;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -44,6 +39,7 @@ public class GithubProvider {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("https://api.github.com/user?access_token="+accessToken)
+                .addHeader("Accept","application/json")
                 .build();
         try {
             Response response = client.newCall(request).execute();
