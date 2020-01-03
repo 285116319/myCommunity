@@ -1,4 +1,4 @@
-package com.wyban.community.HelloController;
+package com.wyban.community.Controller;
 import com.wyban.community.Provider.GithubProvider;
 import com.wyban.community.dto.AccessTokenDTO;
 import com.wyban.community.dto.GithubUser;
@@ -45,7 +45,7 @@ public class AuthorizeController {
         accessTokenDTO.setState(state);
         String accesstoken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(accesstoken);
-        if (githubUser !=null){
+        if (githubUser !=null && githubUser.getId()!=null){
             //登陆成功，写cookie 和session
             User user = new User();
             String token = UUID.randomUUID().toString();
